@@ -53,6 +53,7 @@ class Neural_Network(object):
         # -(y-yHat)(dyHat/dz3)(dz3/dw2)
         # -(y-yHat)f'(z3)(dz3/dw2)
         # -(y-yHat)f'(z3) is delta3
+
         delta3 = np.multiply(-(y-self.yHat), self.sigmoidPrime(self.z3))
         # dz3/dw2 is a2
         # dj/dw2 can be computed by doing a transposed dotted with delta3
@@ -65,10 +66,11 @@ class Neural_Network(object):
         #        = delta3*w2transposed*(da2/dz2)(dz2/dw1)
         #        = delta3*w2transposed*f'(z2)(dz2/dw1)
         # delta2 = delta3*w2transposed*f'(z2)
+
         delta2 = np.dot(delta3, self.w2.T)*self.sigmoidPrime(self.z2)
         # dz2/dw1 is x
         # djdw1 can be computed by doing a transposed dotted with delta2
-        djdw1 = np.dot(x.t, delta2)
+        djdw1 = np.dot(x.T, delta2)
 
         return djdw1, djdw2
 
@@ -76,11 +78,58 @@ class Neural_Network(object):
         # apply sigmoid activation function
         return 1/(1+np.exp(-z))
 
-    def sigmoidPrime(z):
+    def sigmoidPrime(self, z):
         # derivate of sigmoid function
-        return np.exp(-z)/((1+np.exp(-x))**2)
+        return np.exp(-z)/((1+np.exp(-z))**2)
+
+    # helper functions
+    def getParams(self):
+        # get w1 and w2
+        params = np.concatenate((self.w1.ravel(), self.w2.ravel()))
+        return params
+
+    def setParams(self, params):
+        # set w1 and w2 using single parameter vector:
+        w1_start = 0
+        w1_end = self.hiddenLayerSize*self.inputLayerSize
+        self.w1 = np.reshape(params[w1_start:w1_end], (self.inputLayerSize, self.hiddenLayerSize))
+        w2_end = w1_end+self.hiddenLayerSize*self.hiddenLayerSize
+        self.w2 = np.reshape(params[w1_end:w2_end], (self.hiddenLayerSize, self.outputLayerSize))
+
+    def computeGradients(self, x, y):
+        djdw1, djdw2 = self.costFunctionPrime(x, y)
+        return np.concatenate((djdw1.ravel(), djdw2.ravel()))
+
+def computeNumericalGradient(N, x, y):
+    paramsInitial = N.getParams()
+    numgrad = np.zeros(paramsInitial.shape)
+    perturb = np.zeros(paramsInitial.shape)
+    e = 1e-4
+
+    for i in range(len(paramsInitial)):
+        # set pertubation vector
+        perturb[i] = e
+        N.setParams(paramsInitial + perturb)
+        loss2 = N.costFunction(x, y)
+
+        N.setParams(paramsInitial - perturb)
+        loss1 = N.costFunction(x, y)
+
+        # compute numerical gradient
+        numgrad[i] = (loss2 - loss1) / (2*e)
+
+        # return the value we changed back to zero
+        perturb[i] = 0
+
+    # return params to original value
+    N.setParams(paramsInitial)
+
+    return numgrad
+
 
 NN = Neural_Network()
-yHat = NN.forward(x)
-print yHat
-print y
+
+numgrad = computeNumericalGradient(NN, x, y)
+grad = NN.computeGradients(x, y)
+
+print np.linalg.norm(grad-numgrad)/np.linalg.norm(grad+numgrad)
