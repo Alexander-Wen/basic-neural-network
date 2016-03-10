@@ -85,6 +85,7 @@ class Neural_Network(object):
     # helper functions
     def getParams(self):
         # get w1 and w2
+        # ravel flattens arrays
         params = np.concatenate((self.w1.ravel(), self.w2.ravel()))
         return params
 
@@ -92,6 +93,7 @@ class Neural_Network(object):
         # set w1 and w2 using single parameter vector:
         w1_start = 0
         w1_end = self.hiddenLayerSize*self.inputLayerSize
+        # reshape reshapes array into matrix
         self.w1 = np.reshape(params[w1_start:w1_end], (self.inputLayerSize, self.hiddenLayerSize))
         w2_end = w1_end+self.hiddenLayerSize*self.hiddenLayerSize
         self.w2 = np.reshape(params[w1_end:w2_end], (self.hiddenLayerSize, self.outputLayerSize))
