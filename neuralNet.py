@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import optimize
 
 # input training data
 # hours sleep, hours studying
@@ -102,6 +103,40 @@ class Neural_Network(object):
         djdw1, djdw2 = self.costFunctionPrime(x, y)
         return np.concatenate((djdw1.ravel(), djdw2.ravel()))
 
+class trainer(object):
+    def __init__(self, N):
+        # make local reference to Neural Network
+        self.N = N
+
+    def costFunctionWrapper(self, params, x, y):
+        self.N.setParams(params)
+        cost = self.N.costFunction(x, y)
+        grad = self.N.computeGradients(x, y)
+        return cost, grad
+
+    def callBackF(self, params):
+        self.N.setParams(params)
+        self.J.append(self.N.costFunction(self.x, self.y))
+
+    def train(self, x, y):
+        # make internal variable for callback function
+        self.x = x
+        self.y = y
+
+        # make empty list to store costs
+        self.J = []
+
+        params0 = self.N.getParams()
+
+        options = {'maxiter': 200, 'disp': True}
+
+        # BFGS (Broyden–Fletcher–Goldfarb–Shanno) approximates Newton's method
+        _res = optimize.minimize(self.costFunctionWrapper, params0, jac = True, method = 'BFGS', args=(x, y), options=options, callback=self.callBackF)
+
+        self.N.setParams(_res.x)
+        self.optimizationResults = _res
+
+
 def computeNumericalGradient(N, x, y):
     paramsInitial = N.getParams()
     numgrad = np.zeros(paramsInitial.shape)
@@ -130,8 +165,6 @@ def computeNumericalGradient(N, x, y):
 
 
 NN = Neural_Network()
-
-numgrad = computeNumericalGradient(NN, x, y)
-grad = NN.computeGradients(x, y)
-
-print np.linalg.norm(grad-numgrad)/np.linalg.norm(grad+numgrad)
+T = trainer(NN)
+T.train(x, y)
+print NN.forward(x)
