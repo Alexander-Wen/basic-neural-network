@@ -16,7 +16,7 @@ class Neural_Network(object):
         # Define Hyperparamters
         self.inputLayerSize = 2
         self.outputLayerSize = 1
-        self.hiddenLayerSize = 3
+        self.hiddenLayerSize = 5
 
         # Weights of the synapses
         self.w1 = np.random.randn(self.inputLayerSize, self.hiddenLayerSize)
@@ -130,7 +130,7 @@ class trainer(object):
 
         options = {'maxiter': 200, 'disp': True}
 
-        # BFGS (Broyden–Fletcher–Goldfarb–Shanno) approximates Newton's method
+        # BFGS (Broyden-Fletcher-Goldfarb-Shanno) approximates Newton's method
         _res = optimize.minimize(self.costFunctionWrapper, params0, jac = True, method = 'BFGS', args=(x, y), options=options, callback=self.callBackF)
 
         self.N.setParams(_res.x)
