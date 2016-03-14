@@ -10,4 +10,3 @@ Gradient descent is done by a [BFGS algorithm](https://en.wikipedia.org/wiki/Bro
 - add more layers
 - create real training data
 - create real test data
-- split file into multiple files
