@@ -1,15 +1,4 @@
 import numpy as np
-from scipy import optimize
-
-# input training data
-# hours sleep, hours studying
-x = np.array(([3,5], [5,1], [10,2]), dtype=float)
-# result training data
-# grade
-y = np.array(([75],[82],[93]), dtype=float)
-# scale inputs so they are in the same format
-x = x/np.amax(x, axis=0)
-y = y/100
 
 class Neural_Network(object):
     def __init__(self):
@@ -102,69 +91,3 @@ class Neural_Network(object):
     def computeGradients(self, x, y):
         djdw1, djdw2 = self.costFunctionPrime(x, y)
         return np.concatenate((djdw1.ravel(), djdw2.ravel()))
-
-class trainer(object):
-    def __init__(self, N):
-        # make local reference to Neural Network
-        self.N = N
-
-    def costFunctionWrapper(self, params, x, y):
-        self.N.setParams(params)
-        cost = self.N.costFunction(x, y)
-        grad = self.N.computeGradients(x, y)
-        return cost, grad
-
-    def callBackF(self, params):
-        self.N.setParams(params)
-        self.J.append(self.N.costFunction(self.x, self.y))
-
-    def train(self, x, y):
-        # make internal variable for callback function
-        self.x = x
-        self.y = y
-
-        # make empty list to store costs
-        self.J = []
-
-        params0 = self.N.getParams()
-
-        options = {'maxiter': 200, 'disp': True}
-
-        # BFGS (Broyden-Fletcher-Goldfarb-Shanno) approximates Newton's method
-        _res = optimize.minimize(self.costFunctionWrapper, params0, jac = True, method = 'BFGS', args=(x, y), options=options, callback=self.callBackF)
-
-        self.N.setParams(_res.x)
-        self.optimizationResults = _res
-
-
-def computeNumericalGradient(N, x, y):
-    paramsInitial = N.getParams()
-    numgrad = np.zeros(paramsInitial.shape)
-    perturb = np.zeros(paramsInitial.shape)
-    e = 1e-4
-
-    for i in range(len(paramsInitial)):
-        # set pertubation vector
-        perturb[i] = e
-        N.setParams(paramsInitial + perturb)
-        loss2 = N.costFunction(x, y)
-
-        N.setParams(paramsInitial - perturb)
-        loss1 = N.costFunction(x, y)
-
-        # compute numerical gradient
-        numgrad[i] = (loss2 - loss1) / (2*e)
-
-        # return the value we changed back to zero
-        perturb[i] = 0
-
-    # return params to original value
-    N.setParams(paramsInitial)
-
-    return numgrad
-
-
-NN = Neural_Network()
-T = trainer(NN)
-T.train(x, y)
-print NN.forward(x)
