@@ -39,6 +39,6 @@ print y
 NN = Neural_Network()
 T = Trainer(NN)
 T.train(x, y)
+result = NN.forward(x)
 
-print 'guessed data'
-print NN.forward(x)
+print result
