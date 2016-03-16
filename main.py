@@ -1,16 +1,7 @@
 import numpy as np
-from trainer import Trainer
+from dataLoader import Data
 from neuralNet import Neural_Network
-
-# input training data
-# hours sleep, hours studying
-x = np.array(([3,5], [5,1], [10,2]), dtype=float)
-# result training data
-# grade
-y = np.array(([75],[82],[93]), dtype=float)
-# scale inputs so they are in the same format
-x = x/np.amax(x, axis=0)
-y = y/100
+from trainer import Trainer
 
 def computeNumericalGradient(N, x, y):
     paramsInitial = N.getParams()
@@ -38,8 +29,16 @@ def computeNumericalGradient(N, x, y):
 
     return numgrad
 
+D = Data()
+a = D.readData('cutData.csv')
+x, y = D.loadData(a)
+
+print 'real data'
+print y
 
 NN = Neural_Network()
 T = Trainer(NN)
 T.train(x, y)
+
+print 'guessed data'
 print NN.forward(x)
