@@ -30,15 +30,22 @@ def computeNumericalGradient(N, x, y):
     return numgrad
 
 D = Data()
-a = D.readData('cutData.csv')
-x, y = D.loadData(a)
+data = D.readData('cutData.csv')
+
+trainData, testData = D.splitData(data, 0.7)
+
+trainX, trainY = D.loadData(trainData)
+trainX, trainY = D.toMatrix(trainX, trainY)
+
+testX, testY = D.loadData(testData)
+testX, testY = D.toMatrix(testX, testY)
 
 print 'real data'
-print y
+print testY
 
 NN = Neural_Network()
 T = Trainer(NN)
-T.train(x, y)
-result = NN.forward(x)
+T.train(trainX, trainY)
+result = NN.forward(testX)
 
 print result
