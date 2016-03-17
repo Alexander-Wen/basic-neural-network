@@ -6,7 +6,10 @@ Each synpase uses a [sigmoid activation function](https://en.wikipedia.org/wiki/
 
 Gradient descent is done by a [BFGS algorithm](https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm)
 
-## Future
+## TODO
 - add more layers
 - create real training data
 - create real test data
+
+## Note
+The training data and testing data are randomly generated, so the results will be highly incorrect.
