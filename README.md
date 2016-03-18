@@ -10,6 +10,7 @@ Gradient descent is done by a [BFGS algorithm](https://en.wikipedia.org/wiki/Bro
 - add more layers
 - create real training data
 - create real test data
+- create class to determine accuracy of data
 
 ## Note
 The training data and testing data are randomly generated, so the results will be highly incorrect.
