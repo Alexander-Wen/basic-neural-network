@@ -1,3 +1,5 @@
+import numpy as np
+
 def computeNumericalGradient(N, x, y):
     paramsInitial = N.getParams()
     numgrad = np.zeros(paramsInitial.shape)
