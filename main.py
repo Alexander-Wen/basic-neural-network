@@ -2,6 +2,7 @@ import numpy as np
 from dataLoader import Data
 from neuralNet import Neural_Network
 from trainer import Trainer
+from score import Score
 from helpers import computeNumericalGradient
 
 D = Data()
@@ -25,10 +26,14 @@ result = NN.forward(testX)
 # if this number is too big, then the result will be garbage
 numgrad = computeNumericalGradient(NN, trainX, trainY)
 grad = NN.computeGradients(trainX, trainY)
-print np.linalg.norm(grad-numgrad)/np.linalg.norm(grad+numgrad)
+# print np.linalg.norm(grad-numgrad)/np.linalg.norm(grad+numgrad)
 
-print 'real data'
-print testY
+# print 'real data'
+# print testY
 
-print 'result'
-print result
+# print 'result'
+# print result
+S = Score();
+score = S.score(testY, result)
+
+print 'score (lower is better): ', score
