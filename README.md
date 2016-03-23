@@ -6,6 +6,8 @@ Each synpase uses a [sigmoid activation function](https://en.wikipedia.org/wiki/
 
 Gradient descent is done by a [BFGS algorithm](https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm)
 
+## Steps to run locally
+  1. clone the repo locally by running the command `git clone https://github.com/Alexander-Wen/basic-neural-network`
 ## TODO
 - add more layers
 - create real training data
